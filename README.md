@@ -18,18 +18,18 @@ Nessa oficina iremos resolver o problema de criar uma API que armazena e exibe b
 
 A oficina terá 2 horas de duração e terá a seguinte pauta:
 
-* Abertura (15 minutos):
+#### Abertura (15 minutos):
 
 - Apresentação do projeto da Academia Tech
 - Agradecimentos
 - Apresentação do tema da ofina
 - Introdução ao AWS
 
-* Demonstração da solução (10 minutos)
+#### Demonstração da solução (10 minutos)
 
 - com o painel da amazon aberto, rodar um teste de carga contra a API para mostrar o autoscalling acontencendo
 
-* Mão na massa (70 minutos)
+#### Mão na massa (70 minutos)
 
 - Introdução ao console do AWS
 - Setup da máquina da aplicação com [fabric](fabfile.org)
@@ -40,8 +40,8 @@ A oficina terá 2 horas de duração e terá a seguinte pauta:
 - Teste funcional
 - Teste de carga
 
-* Demonstração final (5 minutos)
+#### Demonstração final (5 minutos)
 
 - com o painel da amazon aberto, rodar um teste de carga contra a API para mostrar o autoscalling acontencendo
 
-* Considerações finais (20 minutos)
+### Considerações finais (20 minutos)
