@@ -2,7 +2,7 @@
 
 Uma introdução ao cloud computing: **Arquitetar uma API 100% escalável usando AWS**.
 
-[Marcel Nicolay](http://github.com/marcelnicolay), [Gustavo Barbosa](http://github.com/barbosa), [Paulo ALem](http://github.com/pauloalem), [Rodrigo Machado](http://github.com/rcmachado)
+[Marcel Nicolay](http://github.com/marcelnicolay), [Gustavo Barbosa](http://github.com/barbosa), [Paulo Alem](http://github.com/pauloalem), [Rodrigo Machado](http://github.com/rcmachado)
 
 ## Descrição
 
@@ -27,7 +27,7 @@ A oficina terá 2 horas de duração:
 
 #### Demonstração da solução (10 minutos)
 
-- com o painel da amazon aberto, rodar um teste de carga contra a API para mostrar o autoscalling acontencendo
+- com o painel da Amazon aberto, rodar um teste de carga contra a API para mostrar o autoscalling acontencendo
 
 #### Mão na massa (70 minutos)
 
