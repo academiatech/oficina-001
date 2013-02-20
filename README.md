@@ -1,14 +1,14 @@
-# [Academia Tech](academiatech.com.br) - Oficina 001
+# [Academia Tech](http://academiatech.com.br) - Oficina 001
 
 Uma introdução ao cloud computing: **Arquitetar uma API 100% escalável usando AWS**.
 
-[Marcel Nicolay](github.com/marcelnicolay), [Gustavo Barbosa](github.com/barbosa), [Paulo ALem](github.com/pauloalem), [Rodrigo Machado](github.com/rcmachado)
+[Marcel Nicolay](http://github.com/marcelnicolay), [Gustavo Barbosa](http://github.com/barbosa), [Paulo ALem](http://github.com/pauloalem), [Rodrigo Machado](http://github.com/rcmachado)
 
 ## Descrição
 
 O que pode ser mais legal do que arquitetar uma solução que tem como requisito não cair nunca, além de atender 10 usuários da mesma maneira que atende 100.000, sem nenhuma intervenção manual? 
 
-É isso que iremos ver, como arquitetar uma API de alta disponibilidade, que escala automaticamente de acordo com o consumo, utilizando os serviços do [AWS](aws.amazon.com).
+É isso que iremos ver, como arquitetar uma API de alta disponibilidade, que escala automaticamente de acordo com o consumo, utilizando os serviços do [AWS](http://aws.amazon.com).
 
 ## Resumo
 
@@ -32,7 +32,7 @@ A oficina terá 2 horas de duração:
 #### Mão na massa (70 minutos)
 
 - Introdução ao console do AWS
-- Setup da máquina da aplicação com [fabric](fabfile.org)
+- Setup da máquina da aplicação com [fabric](http://fabfile.org)
 - Configuração do DynamoDB
 - Confuguração do Cloud Cache
 - Configuração do auto scalling (ELB e Cloud Cache)
@@ -48,10 +48,9 @@ A oficina terá 2 horas de duração:
 
 ## Pré-requisitos
 
-- Não teremos instruções específicas para windows, utilizar mac ou linux. 
-- Preparar o ambiente local com:
+Não teremos instruções específicas para windows, utilizar mac ou linux. Preparar o ambiente local com:
 
-1. python 2.7, ou superior, com o pip instalado instalado [1]()
+1. python 2.7, ou superior, com o pip instalado instalado
 2. executar no terminal:
 
 ```bash
@@ -64,7 +63,5 @@ pip install virtualenv-wrapper
 mkvirtualenv academiatech
 pip install -r requirements.txt
 
-cd app
-
-nosetests
+cd app && nosetests
 ```
