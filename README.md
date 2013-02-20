@@ -4,13 +4,13 @@ Uma introdução ao cloud computing: como arquitetar uma API 100% escalável usa
 
 [Marcel Nicolay](github.com/marcelnicolay), [Gustavo Barbosa](github.com/barbosa), [Paulo ALem](github.com/pauloalem), [Rodrigo Machado](github.com/rcmachado)
 
-### Descrição
+## Descrição
 
 O que pode ser mais legal do que arquitetar uma solução que tem como requisito não cair nunca, além de atender 10 usuários da mesma maneira que atende 100.000, sem nenhuma intervenção manual? 
 
 É isso que iremos ver, como arquitetar uma API de alta disponibilidade, que escala automaticamente de acordo com o consumo, utilizando os serviços do [AWS](aws.amazon.com).
 
-### Resumo
+## Resumo
 
 O foco da oficina será em como configurar e utilizar os serviços de `EC2`, `ELB`, `DynamoDB`, `Cloud Cache` e `Cloud Watch` da Amazon bem com automatizar os scripts de setup e deploy, a fim de criar uma poderosa solução que pode, e deve, ser replicada para diversos tipos de problema.
 
