@@ -1,0 +1,5 @@
+https://github.com/boto/boto/tarball/develop
+https://github.com/marcelnicolay/asyncdynamo/tarball/0.2.6
+tornado
+simplejson
+python-memcached

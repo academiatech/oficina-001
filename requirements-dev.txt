@@ -1,0 +1,7 @@
+-r requirements.txt
+https://github.com/quatix/fabix/tarball/dc7fa47a96f1aee6bbbcbe3900fbce6981a82f0c
+nose
+coverage
+fudge
+fabric
+cuisine
