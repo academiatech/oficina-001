@@ -7,7 +7,6 @@ from tornado import gen
 from asyncdynamo.orm.table import Table
 
 from mybookmarks import settings
-from mybookmarks.handlers import jsonp
 
 import logging
 
@@ -19,15 +18,17 @@ class BookmarkSaveHandler(RequestHandler):
         self.cache = memcache.Client(**conf)
 
     @addslash
-    @jsonp
     @gen.engine
     @asynchronous
-    def get(self, user_id, callback):
+    def post(self, user_id):
         """
-        get user preference
+        Save a new user bookmark
 
          - userid: user id
         """
+        title = self.get_argument('title')
+        url = self.get_argument('url')
+
         cache_key = hashlib.sha1(user_id).hexdigest()
         user_data = self.cache.get(cache_key)
 
@@ -37,13 +38,28 @@ class BookmarkSaveHandler(RequestHandler):
                 {'HashKeyElement': {'S': user_id}})
 
             if 'Item' not in item:
-                callback({'status': '', 'error': 'user not found'})
+                self.write({'status': '', 'error': 'user not found'})
+                self.finish()
                 return
-
-            user_data = {
-                'user_id': item['Item']['user_id']['S'],
-            }
 
             self.cache.set(cache_key, user_data)
 
-        callback({'status': 'OK', 'user': user_data})
+        bookmarks = Table('Bookmark', key='id')
+
+        bookmark_id = ":".join(user_data['id'], url)
+        bookmark_data = {
+            'id': {"S": bookmark_id},
+            'user_id': {"S": user_id},
+            'title': {"S": title},
+            'url': {"S": url},
+        }
+        item_saved = yield gen.Task(bookmarks.put_item, bookmark_data)
+
+        if item_saved and 'ConsumedCapacityUnits' in item_saved:
+            response = {'status': 'OK', 'bookmark': bookmark_data}
+        else:
+            logging.error('bookmark not saved %s' % item_saved)
+            response = {'status': '', 'error': 'unknown error'}
+
+        self.write(response)
+        self.finish()

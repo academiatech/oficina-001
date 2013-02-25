@@ -1,12 +1,10 @@
 import json
 
-from bookmark.server import application
-from bookmark.handlers.bookmark import BookmarkSaveHandler
+from mybookmarks.server import application
 
 from asyncdynamo.orm.table import Table
 from tornado.ioloop import IOLoop
 from tornado.testing import AsyncHTTPTestCase
-from fudge import patched_context
 from urllib import urlencode
 
 
@@ -19,45 +17,34 @@ class BookmarkTestCase(AsyncHTTPTestCase):
         return application
 
     def tearDown(self):
-        table = Table('User', key='id')
-        table.drop(callback=self.stop)
+        user = Table('User', key='id')
+        user.drop(callback=self.stop)
+
+        bookmark = Table('Bookmark', key='id')
+        bookmark.drop(callback=self.stop)
 
         self.wait()
 
-    def test_can_be_save_user_preferences(self):
+    def test_create_bookmark(self):
 
-        app_id = "shouldBeAPP_ID"
-        user_id = "shouldBeUserId"
-        access_token = "shouldBeAccessToken"
-        share = "1"
-        notify_user = "1"
-        ident = ":".join([app_id, user_id])
+        user_data = {
+            'id': 'user-id',
+            'name': 'should be user name',
+            'email': 'shouldbe@user.email'
+        }
+        UserTable = Table('User', key='id')
+        UserTable.put_item(user_data, callback=self.stop)
+        item_saved = self.wait()
 
         params = urlencode({
-            'app_id': app_id,
-            'user_id': user_id,
-            'access_token': access_token,
-            'share': share,
-            'notify_user': notify_user,
+            'title': 'should be book title',
+            'url': 'http://academiatech.com.br/'
         })
 
-        def is_valid_access_token(handler, access_token, callback):
-            callback(True)
+        resource = '/users/{}/bookmark/'.format(user_data['id'])
+        self.http_client.fetch(self.get_url(resource), method='POST',
+            body=params, callback=self.stop)
 
-        with patched_context(UserSaveHandler, "is_valid_access_token", is_valid_access_token):
-            self.http_client.fetch(self.get_url('/user/save?' + params), self.stop)
-            response = self.wait()
+        response = self.wait()
 
-        # test handler response
-        self.assertEquals('callback({"status": "OK"});', response.body)
-
-        # test user data
-        table = Table('User', key='id')
-        table.get_item({'HashKeyElement': {'S':ident}}, self.stop)
-        item = self.wait()
-
-        self.assertEquals(ident, item['Item']['id']['S'])
-        self.assertEquals(app_id, item['Item']['app_id']['S'])
-        self.assertEquals(user_id, item['Item']['user_id']['S'])
-        self.assertEquals(share, item['Item']['share']['S'])
-        self.assertEquals(notify_user, item['Item']['notify_user']['S'])
+        self.assertEquals(200, response.code)
