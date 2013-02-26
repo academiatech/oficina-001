@@ -18,10 +18,11 @@ PROJECT_DIR = '/var/www/project/'
 
 
 @task
-def prod():
+def prod(prefix):
     """Configure env variables for production"""
+    env.prefix = prefix
     env.user = 'ubuntu'
-    env.hosts = ec2.get_autoscaling_instances('mybookmarks-app')
+    env.hosts = ec2.get_autoscaling_instances('{}-mybookmarks'.format(env.prefix))
 
 
 @task
@@ -54,25 +55,25 @@ def install_requirements():
 
 
 @task
-def setup_autoscale(prefix):
+def setup_autoscale():
     """Setup AWS autoscale"""
     kwargs = {
         "ami_id": 'ami-3fec7956',  # Official Ubuntu 12.04.1 LTS US-EAST-1
         "instance_type": "t1.micro",
-        "key_name": "{}-mybookmarks".format(prefix),
-        "security_groups": ["{}-mybookmarks".format(prefix)],
+        "key_name": "{}-mybookmarks".format(env.prefix),
+        "security_groups": ["{}-mybookmarks".format(env.prefix)],
         "availability_zones": ["us-east-1a", "us-east-1b", "us-east-1c"],
         "min_instances": 1,
         "sp_up_adjustment": 2,
-        "load_balancers": ["{}-mybookmarks".format(prefix)]
+        "load_balancers": ["{}-mybookmarks".format(env.prefix)]
     }
-    ec2.setup_autoscale('{}-mybookmarks'.format(prefix), **kwargs)
+    ec2.setup_autoscale('{}-mybookmarks'.format(env.prefix), **kwargs)
 
 
 @taks
-def update_autoscale(instance_id, prefix):
+def update_autoscale(instance_id):
     """Update autoscale configuration"""
-    ec2.update_autoscale(instance_id, '{}-mybookmarks'.format(prefix))
+    ec2.update_autoscale(instance_id, '{}-mybookmarks'.format(env.prefix))
 
 
 @task
