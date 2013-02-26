@@ -21,7 +21,6 @@ PROJECT_DIR = '/var/www/project/'
 def prod():
     """Configure env variables for production"""
     env.user = 'ubuntu'
-    env.key_filename = '/path/to/key.pem'
     env.hosts = ec2.get_autoscaling_instances('mybookmarks-app')
 
 
