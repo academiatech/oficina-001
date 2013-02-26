@@ -1,8 +1,8 @@
 import json
 
 from mybookmarks.server import application
+from mybookmarks.tables import UserTable
 
-from asyncdynamo.orm.table import Table
 from tornado.ioloop import IOLoop
 from tornado.testing import AsyncHTTPTestCase
 from urllib import urlencode
@@ -17,7 +17,7 @@ class UserTestCase(AsyncHTTPTestCase):
         return application
 
     def tearDown(self):
-        table = Table('User', key='id')
+        table = UserTable()
         table.drop(callback=self.stop)
 
         self.wait()

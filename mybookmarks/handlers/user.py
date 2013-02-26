@@ -5,8 +5,8 @@ import uuid
 import memcache
 from tornado.web import addslash, asynchronous, RequestHandler
 from tornado import gen
-from asyncdynamo.orm.table import Table
 
+from mybookmarks.tables import UserTable
 from mybookmarks.models.user import User
 from mybookmarks import settings
 
@@ -56,8 +56,8 @@ class UserSaveHandler(RequestHandler):
 
         user_id = str(uuid.uuid5(uuid.NAMESPACE_OID, email.encode('utf-8')))
 
-        UserTable = Table('User', key='id')
-        item = yield gen.Task(UserTable.get_item,
+        userTable = UserTable()
+        item = yield gen.Task(userTable.get_item,
             {'HashKeyElement': {'S': user_id}})
 
         if 'Item' in item:
@@ -70,7 +70,7 @@ class UserSaveHandler(RequestHandler):
             'name': {"S": name},
             'email': {"S": email},
         }
-        item_saved = yield gen.Task(UserTable.put_item, user_data)
+        item_saved = yield gen.Task(userTable.put_item, user_data)
         saved_data = {
             'id': user_id,
             'name': name,

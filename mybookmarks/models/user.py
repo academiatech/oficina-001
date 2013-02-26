@@ -2,8 +2,7 @@ import hashlib
 import memcache
 from tornado import gen
 
-from asyncdynamo.orm.table import Table
-
+from mybookmarks.tables import UserTable
 from mybookmarks import settings
 
 
@@ -19,8 +18,8 @@ class User(object):
         user_data = cache.get(cache_key)
 
         if not user_data:
-            table = Table('User', key='id')
-            item = yield gen.Task(table.get_item,
+            userTable = UserTable()
+            item = yield gen.Task(userTable.get_item,
                 {'HashKeyElement': {'S': user_id}})
 
             if 'Item' in item:

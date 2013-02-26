@@ -1,12 +1,11 @@
 # coding: utf-8
-import hashlib
 import logging
 import uuid
+import time
 from tornado.web import addslash, asynchronous, RequestHandler
 from tornado import gen
 
-from asyncdynamo.orm.session import Session
-from asyncdynamo.orm.table import Table
+from mybookmarks.tables import BookmarkTable
 
 from mybookmarks.models.user import User
 
@@ -22,16 +21,30 @@ class BookmarkHandler(RequestHandler):
 
          - userid: user id
         """
-        query_dict = {'user_id': {'S': user_id}}
-        session = Session()
-
-        item = yield gen.Task(session.query,
-            'Bookmark', query_dict)
-
-        if 'Item' not in item:
+        user = yield gen.Task(User.get, user_id)
+        if not user:
             self.write({'status': '', 'error': 'user not found'})
             self.finish()
             return
+
+        bookmarkTable = BookmarkTable()
+
+        bookmarks = yield gen.Task(bookmarkTable.query,
+            hash_key_value={'S': user_id},
+            limit=10)
+
+        response = {'status': 'OK', 'total': bookmarks['Count'], 'bookmarks': []}
+
+        for bookmark in bookmarks['Items']:
+            response['bookmarks'].append({
+                'user_id': bookmark['user_id']['S'],
+                'url': bookmark['url']['S'],
+                'title': bookmark['title']['S'],
+                'created': bookmark['created']['N'],
+            })
+
+        self.write(response)
+        self.finish()
 
     @addslash
     @gen.engine
@@ -51,19 +64,17 @@ class BookmarkHandler(RequestHandler):
             self.finish()
             return
 
-        bookmarks = Table('Bookmark', key='id')
+        bookmarkTable = BookmarkTable()
 
-        bookmark_id = str(uuid.uuid5(uuid.NAMESPACE_OID, ":".join([user['id'], url]).encode('utf-8')))
         bookmark_data = {
-            'id': {"S": bookmark_id},
             'user_id': {"S": user_id},
             'title': {"S": title},
             'url': {"S": url},
+            'created': {"N": str(int(time.time()))},
         }
-        item_saved = yield gen.Task(bookmarks.put_item, bookmark_data)
+        item_saved = yield gen.Task(bookmarkTable.put_item, bookmark_data)
 
         saved_data = {
-            'id': bookmark_id,
             'user_id': user_id,
             'title': title,
             'url': url
