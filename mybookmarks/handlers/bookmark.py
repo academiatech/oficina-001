@@ -1,23 +1,17 @@
 # coding: utf-8
 import hashlib
-import memcache
 import logging
-
+import uuid
 from tornado.web import addslash, asynchronous, RequestHandler
 from tornado import gen
 
 from asyncdynamo.orm.session import Session
 from asyncdynamo.orm.table import Table
 
-from mybookmarks import settings
+from mybookmarks.models.user import User
 
 
 class BookmarkHandler(RequestHandler):
-
-    def initialize(self, *args, **kwargs):
-        conf = getattr(settings, 'MEMCACHE', dict())
-        self.cache = memcache.Client(**conf)
-        self.session = Session()
 
     @addslash
     @gen.engine
@@ -28,36 +22,16 @@ class BookmarkHandler(RequestHandler):
 
          - userid: user id
         """
-        
         query_dict = {'user_id': {'S': user_id}}
+        session = Session()
 
-        item = yield gen.Task(self.session.query, 
+        item = yield gen.Task(session.query,
             'Bookmark', query_dict)
-
-        print '----------------------'
-        print item
 
         if 'Item' not in item:
             self.write({'status': '', 'error': 'user not found'})
             self.finish()
             return
-
-        user_data = {
-            'id': item['Item']['id']['S'],
-            'name': item['Item']['name']['S'],
-            'email': item['Item']['email']['S']
-        }
-
-        self.cache.set(cache_key, user_data)
-
-        self.write({'status': 'OK', 'user': user_data})
-        self.finish()
-
-class BookmarkSaveHandler(RequestHandler):
-
-    def initialize(self, *args, **kwargs):
-        conf = getattr(settings, 'MEMCACHE', dict())
-        self.cache = memcache.Client(**conf)
 
     @addslash
     @gen.engine
@@ -71,25 +45,15 @@ class BookmarkSaveHandler(RequestHandler):
         title = self.get_argument('title')
         url = self.get_argument('url')
 
-        cache_key = hashlib.sha1(user_id).hexdigest()
-        user_data = self.cache.get(cache_key)
+        user = yield gen.Task(User.get, user_id)
+        if not user:
+            self.write({'status': '', 'error': 'user not found'})
+            self.finish()
+            return
 
-        if not user_data:
-            table = Table('User', key='id')
-            item = yield gen.Task(table.get_item,
-                {'HashKeyElement': {'S': user_id}})
-
-            if 'Item' not in item:
-                self.write({'status': '', 'error': 'user not found'})
-                self.finish()
-                return
-
-            user_data = item.get('Item')
-            self.cache.set(cache_key, user_data)
-            
         bookmarks = Table('Bookmark', key='id')
 
-        bookmark_id = ":".join([user_data['id']['S'], url])
+        bookmark_id = str(uuid.uuid5(uuid.NAMESPACE_OID, ":".join([user['id'], url]).encode('utf-8')))
         bookmark_data = {
             'id': {"S": bookmark_id},
             'user_id': {"S": user_id},

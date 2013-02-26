@@ -7,16 +7,13 @@ from tornado.web import addslash, asynchronous, RequestHandler
 from tornado import gen
 from asyncdynamo.orm.table import Table
 
+from mybookmarks.models.user import User
 from mybookmarks import settings
 
 import logging
 
 
 class UserHandler(RequestHandler):
-
-    def initialize(self, *args, **kwargs):
-        conf = getattr(settings, 'MEMCACHE', dict())
-        self.cache = memcache.Client(**conf)
 
     @addslash
     @gen.engine
@@ -27,28 +24,13 @@ class UserHandler(RequestHandler):
 
          - userid: user id
         """
-        cache_key = hashlib.sha1(user_id).hexdigest()
-        user_data = self.cache.get(cache_key)
+        user = yield gen.Task(User.get, user_id)
+        if not user:
+            self.write({'status': '', 'error': 'user not found'})
+            self.finish()
+            return
 
-        if not user_data:
-            table = Table('User', key='id')
-            item = yield gen.Task(table.get_item,
-                {'HashKeyElement': {'S': user_id}})
-
-            if 'Item' not in item:
-                self.write({'status': '', 'error': 'user not found'})
-                self.finish()
-                return
-
-            user_data = {
-                'id': item['Item']['id']['S'],
-                'name': item['Item']['name']['S'],
-                'email': item['Item']['email']['S']
-            }
-
-            self.cache.set(cache_key, user_data)
-
-        self.write({'status': 'OK', 'user': user_data})
+        self.write({'status': 'OK', 'user': user})
         self.finish()
 
 
@@ -74,8 +56,8 @@ class UserSaveHandler(RequestHandler):
 
         user_id = str(uuid.uuid5(uuid.NAMESPACE_OID, email.encode('utf-8')))
 
-        table = Table('User', key='id')
-        item = yield gen.Task(table.get_item,
+        UserTable = Table('User', key='id')
+        item = yield gen.Task(UserTable.get_item,
             {'HashKeyElement': {'S': user_id}})
 
         if 'Item' in item:
@@ -88,10 +70,7 @@ class UserSaveHandler(RequestHandler):
             'name': {"S": name},
             'email': {"S": email},
         }
-
-        table = Table('User', key='id')
-
-        item_saved = yield gen.Task(table.put_item, user_data)
+        item_saved = yield gen.Task(UserTable.put_item, user_data)
         saved_data = {
             'id': user_id,
             'name': name,
