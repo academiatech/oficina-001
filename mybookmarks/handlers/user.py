@@ -23,7 +23,7 @@ class UserHandler(RequestHandler):
     @asynchronous
     def get(self, user_id):
         """
-        Get user bookmarks
+        Get user
 
          - userid: user id
         """
