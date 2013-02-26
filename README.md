@@ -51,7 +51,7 @@ A oficina terá 2 horas de duração:
 Não teremos instruções específicas para Windows. Utilizaremos Mac OSX ou Linux. Preparar o ambiente local com:
 
 1. python 2.7, ou superior, com o pip instalado
-2. instalar o [fake dynamo](https://github.com/academiatech/oficina-001/wiki/Fake-Dynamo)
+2. instalar e rodar o [fake dynamo](https://github.com/academiatech/oficina-001/wiki/Fake-Dynamo)
 3. executar no terminal:
 
 ```bash
