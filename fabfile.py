@@ -1,19 +1,29 @@
 # coding: utf-8
 import os
 
-from fabric.api import *
-
-env.user = 'vagrant'
-env.port = 2222
-env.key_filename = '/Users/rcmachado/.vagrant.d/insecure_private_key'
-env.hosts = ['127.0.0.1']
+import boto
 
 LOCAL_DIR = os.path.dirname(__file__)
+boto.config.load_from_path(os.path.join(LOCAL_DIR, 'deploy', 'boto.cfg'))
+
+from fabric.api import *
+from fabix.aws import ec2
+
+
 PROJECT_DIR = '/var/www/project/'
 
 
 @task
+def prod():
+    """Configure env variables for production"""
+    env.user = 'ubuntu'
+    env.key_filename = '/path/to/key.pem'
+    env.hosts = ec2.get_autoscaling_instances('mybookmarks-app')
+
+
+@task
 def setup():
+    """Setup project"""
     packages = 'nginx python python-pip'
 
     with prefix('DEBIAN_FRONTEND=noninteractive'):
@@ -41,7 +51,30 @@ def install_requirements():
 
 
 @task
+def setup_autoscale():
+    """Setup AWS autoscale"""
+    kwargs = {
+        "ami_id": 'ami-3fec7956',  # Official Ubuntu 12.04.1 LTS US-EAST-1
+        "instance_type": "t1.micro",
+        "key_name": "mybookmarks",
+        "security_groups": ["mybookmarks-app"],
+        "availability_zones": ["us-east-1a", "us-east-1b", "us-east-1c"],
+        "min_instances": 1,
+        "sp_up_adjustment": 2,
+        "load_balancers": ["mybookmarks-app"]
+    }
+    ec2.setup_autoscale('mybookmarks-app', **kwargs)
+
+
+@taks
+def update_autoscale(instance_id):
+    """Update autoscale configuration"""
+    ec2.update_autoscale(instance_id, 'mybookmarks-app')
+
+
+@task
 def deploy():
+    """Deploy project to server"""
     sudo('rm -rf {}mybookmarks'.format(PROJECT_DIR))
     put(os.path.join(LOCAL_DIR, 'mybookmarks'), PROJECT_DIR, use_sudo=True)
     execute(restart)
@@ -49,16 +82,19 @@ def deploy():
 
 @task
 def start():
+    """Start application service"""
     sudo('start mybookmarks')
 
 
 @task
 def stop():
+    """Stop application service"""
     sudo('stop mybookmarks')
 
 
 @task
 def restart():
+    """Stop and start application service"""
     with settings(warn_only=True):
         execute(stop)
     execute(start)
@@ -66,4 +102,5 @@ def restart():
 
 @task
 def nginx(op):
+    """Manage nginx service"""
     sudo('service nginx {}'.format(op))
