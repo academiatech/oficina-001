@@ -48,9 +48,9 @@ A oficina terá 2 horas de duração:
 
 ## Pré-requisitos
 
-Não teremos instruções específicas para windows, utilizar mac ou linux. Preparar o ambiente local com:
+Não teremos instruções específicas para Windows. Utilizaremos Mac OSX ou Linux. Preparar o ambiente local com:
 
-1. python 2.7, ou superior, com o pip instalado instalado
+1. python 2.7, ou superior, com o pip instalado
 2. executar no terminal:
 
 ```bash
@@ -61,7 +61,7 @@ cd oficina-001
 
 pip install virtualenv-wrapper
 mkvirtualenv academiatech
-pip install -r requirements.txt
+pip install -r requirements-dev.txt
 
-cd app && nosetests
+make test
 ```
