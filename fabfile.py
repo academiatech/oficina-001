@@ -2,11 +2,15 @@
 import os
 
 import boto
+from fabric.api import *
 
 LOCAL_DIR = os.path.dirname(__file__)
-boto.config.load_from_path(os.path.join(LOCAL_DIR, 'deploy', 'boto.cfg'))
+boto_config_file = os.path.join(LOCAL_DIR, 'deploy', 'boto.cfg')
+if not os.path.exists(boto_config_file):
+    abort("Please create deploy/boto.cfg file with AWS credentials")
+boto.config.load_from_path(boto_config_file)
 
-from fabric.api import *
+# we need to import this one after boto.config.load_from_path
 from fabix.aws import ec2
 
 
