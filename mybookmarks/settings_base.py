@@ -9,8 +9,8 @@ DEBUG = False
 TEMPLATE_PATH = get_path_to("templates")
 STATIC_PATH = get_path_to("static")
 
-AWS_ACCESS_KEY = ''
-AWS_SECRET_ACCESS_KEY = ''
+AWS_ACCESS_KEY = 'AKIAIIDHBXCO5Q543I3A'
+AWS_SECRET_ACCESS_KEY = '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'
 
 LOGGING = {
     'version': 1,
