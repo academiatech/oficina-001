@@ -64,9 +64,9 @@ def setup_autoscale():
         "instance_type": "t1.micro",
         "key_name": my_id,
         "security_groups": [my_id],
-        "availability_zones": ["us-east-1a", "us-east-1b", "us-east-1c"],
+        "availability_zones": ["us-east-1a", "us-east-1b", "us-east-1d"],
         "min_instances": 1,
-        "sp_up_adjustment": 2,
+        "sp_up_adjustment": 1,
         "load_balancers": [my_id]
     }
     ec2.setup_autoscale(my_id, **kwargs)
