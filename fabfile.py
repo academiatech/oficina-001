@@ -66,7 +66,7 @@ def setup_autoscale():
         "key_name": my_id,
         "security_groups": [my_id],
         "availability_zones": ["us-east-1a", "us-east-1b", "us-east-1d"],
-        "min_instances": 0,
+        "min_instances": 1,
         "sp_up_adjustment": 1,
         "load_balancers": [my_id]
     }
