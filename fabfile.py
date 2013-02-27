@@ -83,6 +83,12 @@ def deploy():
     """Deploy project to server"""
     sudo('rm -rf {}mybookmarks'.format(PROJECT_DIR))
     put(os.path.join(LOCAL_DIR, 'mybookmarks'), PROJECT_DIR, use_sudo=True)
+
+    # move settings
+    with cd("{}mybookmarks/"):
+        sudo('mv settings_prod.py settings.py')
+        sudo('rm settings.py*')
+
     execute(restart)
 
 
