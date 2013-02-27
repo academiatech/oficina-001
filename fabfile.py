@@ -57,17 +57,19 @@ def install_requirements():
 @task
 def setup_autoscale():
     """Setup AWS autoscale"""
+    my_id = '{}-mybookmarks'.format(env.prefix)
+
     kwargs = {
         "ami_id": 'ami-3fec7956',  # Official Ubuntu 12.04.1 LTS US-EAST-1
         "instance_type": "t1.micro",
-        "key_name": "{}-mybookmarks".format(env.prefix),
-        "security_groups": ["{}-mybookmarks".format(env.prefix)],
+        "key_name": my_id,
+        "security_groups": [my_id],
         "availability_zones": ["us-east-1a", "us-east-1b", "us-east-1c"],
         "min_instances": 1,
         "sp_up_adjustment": 2,
-        "load_balancers": ["{}-mybookmarks".format(env.prefix)]
+        "load_balancers": [my_id]
     }
-    ec2.setup_autoscale('{}-mybookmarks'.format(env.prefix), **kwargs)
+    ec2.setup_autoscale(my_id, **kwargs)
 
 
 @taks
