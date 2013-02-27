@@ -48,7 +48,7 @@ def setup():
     sudo('rm -f /etc/nginx/sites-enabled/default')
     execute(nginx, 'restart')
 
-@task
+
 def install_requirements():
     requirements = os.path.join(LOCAL_DIR, 'requirements.txt')
     python_packages = open(requirements).read().replace('\n', ' ')
