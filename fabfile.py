@@ -72,7 +72,7 @@ def setup_autoscale():
     ec2.setup_autoscale(my_id, **kwargs)
 
 
-@taks
+@task
 def update_autoscale(instance_id):
     """Update autoscale configuration"""
     ec2.update_autoscale(instance_id, '{}-mybookmarks'.format(env.prefix))

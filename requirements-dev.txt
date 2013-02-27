@@ -1,5 +1,5 @@
 -r requirements.txt
-https://github.com/quatix/fabix/tarball/31e0d47e8d55623eb768ae3c247f49b90329e888
+https://github.com/quatix/fabix/tarball/master
 nose
 coverage
 fudge
