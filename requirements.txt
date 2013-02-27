@@ -1,4 +1,4 @@
-https://github.com/boto/boto/tarball/develop
+boto==2.6.0
 https://github.com/marcelnicolay/asyncdynamo/tarball/0.2.7
 tornado==2.4
 simplejson
