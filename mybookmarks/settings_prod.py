@@ -4,7 +4,7 @@ PORT = 8888
 
 LOGGING['root']['handlers'] = ['file']
 LOGGING['handlers']['file'] = {
-    'level': 'DEBUG',
+    'level': 'INFO',
     'class': 'logging.FileHandler',
     'formatter': 'detailed',
     'filename': '/var/log/mybookmarks/app.log',
