@@ -35,6 +35,7 @@ def setup():
         sudo('apt-get -y install {}'.format(packages))
 
     sudo('mkdir -p {}'.format(PROJECT_DIR))
+    sudo('mkdir -p /var/log/mybookmarks')
 
     sudo('pip install virtualenv')
     sudo('virtualenv {}virtualenv'.format(PROJECT_DIR))
@@ -65,7 +66,7 @@ def setup_autoscale():
         "key_name": my_id,
         "security_groups": [my_id],
         "availability_zones": ["us-east-1a", "us-east-1b", "us-east-1d"],
-        "min_instances": 1,
+        "min_instances": 0,
         "sp_up_adjustment": 1,
         "load_balancers": [my_id]
     }
@@ -85,7 +86,7 @@ def deploy():
     put(os.path.join(LOCAL_DIR, 'mybookmarks'), PROJECT_DIR, use_sudo=True)
 
     # move settings
-    with cd("{}mybookmarks/"):
+    with cd("{}mybookmarks/".format(PROJECT_DIR)):
         sudo('mv settings_prod.py settings.py')
         sudo('rm settings.py*')
 
