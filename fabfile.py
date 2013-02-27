@@ -88,7 +88,7 @@ def deploy():
     # move settings
     with cd("{}mybookmarks/".format(PROJECT_DIR)):
         sudo('mv settings_prod.py settings.py')
-        sudo('rm settings.pyc')
+        sudo('rm -f settings.pyc')
 
     execute(restart)
 
