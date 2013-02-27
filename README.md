@@ -50,7 +50,7 @@ A oficina terá 2 horas de duração:
 
 Não teremos instruções específicas para Windows. Utilizaremos Mac OSX ou Linux. Preparar o ambiente local com:
 
-1. python 2.7, ou superior, com o pip instalado
+1. python 2.7, ou superior, com o [pip](https://pypi.python.org/pypi/pip) instalado
 2. instalar e rodar o [fake dynamo](https://github.com/academiatech/oficina-001/wiki/Fake-Dynamo)
 3. executar no terminal:
 
@@ -60,7 +60,7 @@ mkdir -p ~/academiatech && cd ~/academiatech
 git clone git@github.com:academiatech/oficina-001.git
 cd oficina-001
 
-pip install virtualenv-wrapper
+pip install virtualenvwrapper
 mkvirtualenv academiatech
 pip install -r requirements-dev.txt
 

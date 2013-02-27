@@ -28,8 +28,11 @@ class UserHandler(RequestHandler):
         if not user:
             self.write({'status': '', 'error': 'user not found'})
             self.finish()
+            logging.debug('[UserHandler] - user not found')
+
             return
 
+        logging.debug('[UserHandler] - user found %s' % user)
         self.write({'status': 'OK', 'user': user})
         self.finish()
 
